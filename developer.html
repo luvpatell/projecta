@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProjectA — Developer Portal & Analytics Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="developer.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. DEVELOPER LOGIN SCREEN (Exclusive Access: lv.patell / aaru@2604)
+       ======================================================================== -->
+  <section class="auth-section" id="authSection">
+    <div class="auth-card">
+      <div class="auth-header">
+        <img src="PROJECTA_LOGO.png" alt="ProjectA Logo" class="auth-logo">
+        <h2>Developer Portal</h2>
+        <p>Restricted Access • ProjectA Administration</p>
+      </div>
+
+      <div class="auth-alert" id="loginErrorAlert" hidden>
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span id="loginErrorMsg">Invalid username or password. Access denied.</span>
+      </div>
+
+      <form id="loginForm" class="auth-form" autocomplete="off">
+        <div class="form-group">
+          <label for="devUsername">Developer Username</label>
+          <div class="input-wrap">
+            <i class="fa-regular fa-user input-icon"></i>
+            <input type="text" id="devUsername" name="username" placeholder="Enter username" required autofocus>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="devPassword">Password</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="devPassword" name="password" placeholder="Enter password" required>
+            <button type="button" class="btn-toggle-pwd" id="togglePasswordBtn" aria-label="Toggle password visibility">
+              <i class="fa-regular fa-eye" id="togglePasswordIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-login" id="loginBtn">
+          <span class="btn-text"><i class="fa-solid fa-right-to-bracket"></i> Log In to Dashboard</span>
+          <span class="btn-loader" aria-hidden="true"><i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...</span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Main Website</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       2. DEVELOPER DASHBOARD (Secured, shown upon login)
+       ======================================================================== -->
+  <div class="dashboard-wrapper" id="dashboardWrapper" style="display: none;">
+    <!-- Top Navigation Bar -->
+    <header class="dash-navbar">
+      <div class="dash-nav-container">
+        <div class="dash-brand">
+          <img src="PROJECTA_LOGO.png" alt="ProjectA" class="dash-logo">
+          <div class="dash-title">
+            <h3>PROJECT<span>A</span></h3>
+            <span class="dash-tag">Developer Analytics Hub</span>
+          </div>
+        </div>
+
+        <div class="dash-user-controls">
+          <div class="user-badge">
+            <span class="user-dot"></span>
+            <span>Developer: <strong id="currentDevUser">lv.patell</strong></span>
+          </div>
+
+          <a href="index.html" target="_blank" class="btn btn-outline-light btn-sm">
+            <i class="fa-solid fa-globe"></i> View Website
+          </a>
+
+          <button type="button" class="btn btn-outline-light btn-sm" id="refreshDataBtn">
+            <i class="fa-solid fa-rotate"></i> Refresh
+          </button>
+
+          <button type="button" class="btn btn-danger btn-sm" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="dash-main container">
+      <!-- Welcome Headline -->
+      <div class="dash-welcome">
+        <div>
+          <h2>Welcome, <span class="gradient-text">lv.patell</span> 👋</h2>
+          <p>Real-time website traffic, student project orders, and visual analytics.</p>
+        </div>
+        <div class="welcome-actions">
+          <button type="button" class="btn btn-primary btn-sm" id="exportCsvBtn">
+            <i class="fa-solid fa-file-csv"></i> Export Orders (CSV)
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Stat Cards -->
+      <div class="kpi-grid">
+        <!-- Visits Card -->
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap icon-visits">
+            <i class="fa-solid fa-eye"></i>
+          </div>
+          <div class="kpi-details">
+            <span class="kpi-label">Total Website Visits</span>
+            <h3 class="kpi-number" id="totalVisitsCount">0</h3>
+            <span class="kpi-meta"><i class="fa-solid fa-arrow-trend-up"></i> Live Page Views</span>
+          </div>
+        </div>
+
+        <!-- Orders Card -->
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap icon-orders">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </div>
+          <div class="kpi-details">
+            <span class="kpi-label">Total Project Orders</span>
+            <h3 class="kpi-number" id="totalOrdersCount">0</h3>
+            <span class="kpi-meta"><i class="fa-solid fa-bolt"></i> Received Orders</span>
+          </div>
+        </div>
+
+        <!-- Pending / In Progress Card -->
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap icon-pending">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div class="kpi-details">
+            <span class="kpi-label">In Progress / Pending</span>
+            <h3 class="kpi-number" id="pendingOrdersCount">0</h3>
+            <span class="kpi-meta">Awaiting completion</span>
+          </div>
+        </div>
+
+        <!-- Completed Card -->
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap icon-completed">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="kpi-details">
+            <span class="kpi-label">Completed Projects</span>
+            <h3 class="kpi-number" id="completedOrdersCount">0</h3>
+            <span class="kpi-meta">Delivered to students</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphical Analytics Section -->
+      <div class="charts-grid">
+        <!-- Chart 1: Orders by Department -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h4><i class="fa-solid fa-chart-pie"></i> Orders by Diploma Department</h4>
+            <span class="chart-badge">Branch Share</span>
+          </div>
+          <div class="chart-body">
+            <canvas id="departmentChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Visits vs Orders Trend -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h4><i class="fa-solid fa-chart-column"></i> Activity & Traffic Overview</h4>
+            <span class="chart-badge">Traffic vs Orders</span>
+          </div>
+          <div class="chart-body">
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Orders Table Section -->
+      <div class="orders-section">
+        <div class="orders-header">
+          <div class="orders-header-title">
+            <h3><i class="fa-solid fa-list-check"></i> Student Project Orders</h3>
+            <p>View, manage statuses, and directly chat on WhatsApp with students.</p>
+          </div>
+
+          <!-- Filters -->
+          <div class="orders-filters">
+            <div class="search-wrap">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+              <input type="text" id="orderSearchInput" placeholder="Search student, phone, or topic...">
+            </div>
+
+            <select id="departmentFilterSelect" class="dash-select">
+              <option value="ALL">All Departments</option>
+              <option value="Computer Engineering">Computer Engineering</option>
+              <option value="Information Technology (IT)">Information Technology (IT)</option>
+              <option value="Mechanical Engineering">Mechanical Engineering</option>
+              <option value="Civil Engineering">Civil Engineering</option>
+              <option value="Electrical Engineering">Electrical Engineering</option>
+              <option value="Electronics & Communication (EC)">Electronics & Communication (EC)</option>
+              <option value="Automobile Engineering">Automobile Engineering</option>
+              <option value="Chemical Engineering">Chemical Engineering</option>
+              <option value="Other">Other Branches</option>
+            </select>
+
+            <select id="statusFilterSelect" class="dash-select">
+              <option value="ALL">All Statuses</option>
+              <option value="New">New</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="table-responsive">
+          <table class="orders-table" id="ordersTable">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Date & Time</th>
+                <th>Student Info</th>
+                <th>Department</th>
+                <th>Project Requirements</th>
+                <th>Status</th>
+                <th>Quick Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+
+          <!-- Empty State (When no orders are placed yet) -->
+          <div class="empty-state" id="emptyOrdersState" style="display: none;">
+            <div class="empty-icon"><i class="fa-solid fa-inbox"></i></div>
+            <h4>No project orders received yet</h4>
+            <p>100% Real-time: As soon as a student places an order on the website, it will appear here immediately.</p>
+          </div>
+        </div>
+
+        <!-- Table Footer Controls -->
+        <div class="orders-footer">
+          <span id="showingCountText">Showing 0 orders</span>
+          <button type="button" class="btn btn-outline-danger btn-sm" id="clearAllOrdersBtn">
+            <i class="fa-solid fa-trash-can"></i> Clear All Orders
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="developer.js"></script>
+</body>
+</html>
