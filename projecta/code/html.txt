@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProjectA — Build. Learn. Create. | College Student Project Orders</title>
+  <meta name="description" content="Order customized college student projects with ProjectA. Get complete working projects, source code, hardware models, reports, and viva guidance for all branches.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Top Announcement Banner -->
+  <aside class="announcement-bar" aria-label="Announcement">
+    <div class="container announcement-content">
+      <span>🚀 Need a College Project? Get Complete Working Projects, Source Code & Reports from ProjectA!</span>
+      <a href="#contact" class="announcement-link">Order Your Project &rarr;</a>
+    </div>
+  </aside>
+
+  <!-- Navigation Header -->
+  <header class="site-header" id="header">
+    <div class="container nav-container">
+      <a href="#home" class="brand-logo" aria-label="ProjectA Home">
+        <img src="PROJECTA_LOGO.png" alt="ProjectA Logo" class="logo-img">
+        <span class="brand-text">PROJECT<span>A</span></span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="Main Navigation">
+        <ul class="nav-list">
+          <li><a href="#home" class="nav-link active">Home</a></li>
+          <li><a href="#about" class="nav-link">Why ProjectA</a></li>
+          <li><a href="#departments" class="nav-link">Project Branches</a></li>
+          <li><a href="#contact" class="nav-link">Order Project</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://wa.me/919714711897?text=Hello%20ProjectA!%20I%20want%20to%20order%20a%20college%20project." 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="btn btn-whatsapp-header"
+           aria-label="Chat on WhatsApp">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>WhatsApp</span>
+        </a>
+        <a href="#contact" class="btn btn-primary nav-cta">Order Project</a>
+        <button class="mobile-toggle" id="menuToggle" aria-label="Toggle Navigation Menu" aria-expanded="false">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+      <div class="hero-bg-glow"></div>
+      <div class="container hero-container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            <span>Final Year • Mini Projects • Working Models</span>
+          </div>
+          <h1 class="hero-title">
+            Build. Learn. Create. <br>
+            <span class="gradient-text">College Student Project Orders</span>
+          </h1>
+          <p class="hero-subtitle">
+            Welcome to ProjectA! We provide customized, 100% working college projects, complete 
+            source code, hardware working models, reports, and presentation support for diploma 
+            and degree students across all departments.
+          </p>
+          <div class="hero-cta-group">
+            <a href="#contact" class="btn btn-primary btn-lg">
+              <i class="fa-solid fa-cart-plus"></i> Order Your Project
+            </a>
+            <a href="tel:+919714711897" class="btn btn-outline btn-lg">
+              <i class="fa-solid fa-phone"></i> Call +91 97147 11897
+            </a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-number">100%</span>
+              <span class="stat-label">Working Output</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-number">Full</span>
+              <span class="stat-label">Report & Code</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-number">Quick</span>
+              <span class="stat-label">Delivery</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="card-glass hero-card">
+            <div class="hero-card-header">
+              <div class="status-indicator">
+                <span class="pulse-dot"></span>
+                <span>Project Orders Open</span>
+              </div>
+              <span class="badge-accent">Best Student Pricing</span>
+            </div>
+            <div class="hero-card-body">
+              <div class="feature-row">
+                <div class="feature-icon"><i class="fa-solid fa-code"></i></div>
+                <div>
+                  <h4>Complete Code & Working Models</h4>
+                  <p>Tested software code, circuit assemblies & functional prototypes.</p>
+                </div>
+              </div>
+              <div class="feature-row">
+                <div class="feature-icon"><i class="fa-solid fa-file-lines"></i></div>
+                <div>
+                  <h4>Reports & PPT Included</h4>
+                  <p>Comprehensive project documentation ready for college submission.</p>
+                </div>
+              </div>
+              <div class="feature-row">
+                <div class="feature-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                <div>
+                  <h4>Project Explanation & Viva Prep</h4>
+                  <p>Step-by-step guidance so you can present with 100% confidence.</p>
+                </div>
+              </div>
+            </div>
+            <div class="hero-card-footer">
+              <a href="#contact" class="btn-block-link">Place Your Order Today &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why ProjectA Section -->
+    <section class="section about-section" id="about">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="subheading">Why ProjectA</span>
+          <h2 class="section-title">Your Trusted Partner for College Projects</h2>
+          <p class="section-desc">
+            At <strong>ProjectA</strong>, we help students tackle academic project deadlines with high-quality, 
+            reliable development that aligns with your college syllabus and submission guidelines.
+          </p>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-card">
+            <div class="about-icon-box"><i class="fa-solid fa-hammer"></i></div>
+            <h3>Build</h3>
+            <p>We build tailored projects matching your exact topic, specifications, and hardware or software stack.</p>
+          </div>
+          <div class="about-card">
+            <div class="about-icon-box"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h3>Learn</h3>
+            <p>We explain how the project operates, how the code runs, and how to answer typical external viva questions.</p>
+          </div>
+          <div class="about-card">
+            <div class="about-icon-box"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <h3>Create</h3>
+            <p>Deliver unique, error-free projects that impress your evaluators and help you score top grades.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Branches Section -->
+    <section class="section services-section" id="departments">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="subheading">Project Branches</span>
+          <h2 class="section-title">Projects for All College Departments</h2>
+          <p class="section-desc">We build projects for diploma, degree, and master students across various engineering disciplines.</p>
+        </div>
+
+        <div class="services-grid">
+          <div class="service-card">
+            <div class="service-icon"><i class="fa-solid fa-laptop-code"></i></div>
+            <h3>Computer & IT Projects</h3>
+            <p>Full-stack web applications, mobile apps, Machine Learning & AI models, cloud systems, and Python/Java projects.</p>
+            <ul class="service-list">
+              <li><i class="fa-solid fa-check"></i> Python, Django, React & Node.js</li>
+              <li><i class="fa-solid fa-check"></i> Machine Learning & AI Models</li>
+              <li><i class="fa-solid fa-check"></i> Complete Source Code + Database</li>
+            </ul>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon"><i class="fa-solid fa-gears"></i></div>
+            <h3>Mechanical & Automobile Projects</h3>
+            <p>Physical working models, CAD/3D modeling, pneumatic & hydraulic systems, automated fabrication, and robotics.</p>
+            <ul class="service-list">
+              <li><i class="fa-solid fa-check"></i> Working Hardware Prototypes</li>
+              <li><i class="fa-solid fa-check"></i> CAD Design & Calculation Sheets</li>
+              <li><i class="fa-solid fa-check"></i> Complete Fabrication & Video Demo</li>
+            </ul>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon"><i class="fa-solid fa-microchip"></i></div>
+            <h3>Electrical, EC & Civil Projects</h3>
+            <p>Arduino & Raspberry Pi IoT systems, smart power grids, sensor automation, structural design models, and surveying projects.</p>
+            <ul class="service-list">
+              <li><i class="fa-solid fa-check"></i> Tested Circuit Boards & Sensors</li>
+              <li><i class="fa-solid fa-check"></i> IoT & Embedded C Programming</li>
+              <li><i class="fa-solid fa-check"></i> Detailed Schematics & Analysis</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact & Order Section (Core Feature) -->
+    <section class="section contact-section" id="contact">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="subheading">Place Your Order</span>
+          <h2 class="section-title">Order Your College Project with ProjectA</h2>
+          <p class="section-desc">
+            Fill in your project topic and requirements below, or message us directly on WhatsApp for an instant price quote.
+          </p>
+        </div>
+
+        <div class="contact-wrapper">
+          <!-- Left Column: Contact Cards -->
+          <div class="contact-info-panel">
+            <div class="info-card-main">
+              <h3>Direct Order Inquiries</h3>
+              <p>Connect with the ProjectA team right away to discuss your topic, deadline, and pricing.</p>
+
+              <div class="contact-channels">
+                <a href="tel:+919714711897" class="channel-item">
+                  <div class="channel-icon phone"><i class="fa-solid fa-phone"></i></div>
+                  <div class="channel-text">
+                    <span class="channel-label">Call Us Directly</span>
+                    <strong class="channel-val">+91 97147 11897</strong>
+                  </div>
+                </a>
+
+                <a href="https://wa.me/919714711897?text=Hello%20ProjectA!%20I%20want%20to%20order%20a%20college%20project." 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="channel-item">
+                  <div class="channel-icon whatsapp"><i class="fa-brands fa-whatsapp"></i></div>
+                  <div class="channel-text">
+                    <span class="channel-label">WhatsApp (Fastest Order)</span>
+                    <strong class="channel-val">+91 97147 11897</strong>
+                  </div>
+                </a>
+
+                <a href="mailto:support.projecta@gmail.com" class="channel-item">
+                  <div class="channel-icon email"><i class="fa-solid fa-envelope"></i></div>
+                  <div class="channel-text">
+                    <span class="channel-label">Project Inquiries Email</span>
+                    <strong class="channel-val">support.projecta@gmail.com</strong>
+                  </div>
+                </a>
+
+                <div class="channel-item">
+                  <div class="channel-icon location"><i class="fa-solid fa-location-dot"></i></div>
+                  <div class="channel-text">
+                    <span class="channel-label">Service Area</span>
+                    <strong class="channel-val">Ahmedabad, Gujarat</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Connect Buttons -->
+              <div class="quick-connect-buttons">
+                <a href="https://wa.me/919714711897?text=Hello%20ProjectA!%20I%20want%20to%20order%20a%20college%20project." 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="btn btn-whatsapp btn-block">
+                  <i class="fa-brands fa-whatsapp"></i> Order Directly via WhatsApp
+                </a>
+                <a href="tel:+919714711897" class="btn btn-call btn-block">
+                  <i class="fa-solid fa-phone-volume"></i> Call +91 97147 11897
+                </a>
+              </div>
+            </div>
+
+            <!-- Guarantee note -->
+            <div class="quick-note-card">
+              <i class="fa-solid fa-circle-check"></i>
+              <div>
+                <strong>100% Working Project Guarantee</strong>
+                <p>We test every project thoroughly and provide complete setup instructions with video guidance.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Interactive Order Form -->
+          <div class="contact-form-panel">
+            <div class="form-container-card">
+              <div class="form-header">
+                <h3>Submit Project Requirements</h3>
+                <p>Fill in your details and topic. We will respond promptly with cost estimate and timeline.</p>
+              </div>
+
+              <form id="contactForm" class="contact-form" novalidate>
+                <div class="form-grid">
+                  <!-- Student Name Field -->
+                  <div class="form-group">
+                    <label for="fullName">Student Name / તમારું નામ <span class="required">*</span></label>
+                    <div class="input-wrap">
+                      <i class="fa-regular fa-user input-icon"></i>
+                      <input type="text" id="fullName" name="name" placeholder="e.g. Rahul Patel" required autocomplete="name">
+                    </div>
+                    <span class="error-msg" id="nameError">Please enter your name.</span>
+                  </div>
+
+                  <!-- Mobile Field -->
+                  <div class="form-group">
+                    <label for="phone">WhatsApp / Mobile Number <span class="required">*</span></label>
+                    <div class="input-wrap">
+                      <i class="fa-solid fa-phone input-icon"></i>
+                      <input type="tel" id="phone" name="phone" placeholder="e.g. 9876543210" required autocomplete="tel">
+                    </div>
+                    <span class="error-msg" id="phoneError">Please enter a valid 10-digit mobile number.</span>
+                  </div>
+                </div>
+
+                <!-- Email Field -->
+                <div class="form-group">
+                  <label for="email">Email Address <span class="required">*</span></label>
+                  <div class="input-wrap">
+                    <i class="fa-regular fa-envelope input-icon"></i>
+                    <input type="email" id="email" name="email" placeholder="e.g. yourname@gmail.com" required autocomplete="email">
+                  </div>
+                  <span class="error-msg" id="emailError">Please enter a valid email address.</span>
+                </div>
+
+                <!-- Department / Branch Selection (Diploma Branches) -->
+                <div class="form-group">
+                  <label for="serviceInterest">Select Department / શાખા પસંદ કરો <span class="required">*</span></label>
+                  <div class="input-wrap select-wrap">
+                    <i class="fa-solid fa-building-columns input-icon"></i>
+                    <select id="serviceInterest" name="service" required>
+                      <option value="" disabled selected>-- Choose Department / Branch --</option>
+                      <option value="Computer Engineering">Computer Engineering</option>
+                      <option value="Information Technology (IT)">Information Technology (IT)</option>
+                      <option value="Mechanical Engineering">Mechanical Engineering</option>
+                      <option value="Civil Engineering">Civil Engineering</option>
+                      <option value="Electrical Engineering">Electrical Engineering</option>
+                      <option value="Electronics & Communication (EC)">Electronics & Communication (EC)</option>
+                      <option value="Automobile Engineering">Automobile Engineering</option>
+                      <option value="Chemical Engineering">Chemical Engineering</option>
+                      <option value="Instrumentation & Control (IC)">Instrumentation & Control (IC)</option>
+                      <option value="Mechatronics Engineering">Mechatronics Engineering</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <span class="error-msg" id="serviceError">Please select your department.</span>
+                </div>
+
+                <!-- Conditional Other Department Input Field -->
+                <div class="form-group" id="otherDeptGroup" hidden>
+                  <label for="otherDeptInput">Specify Your Department / શાખાનું નામ લખો <span class="required">*</span></label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-pen-to-square input-icon"></i>
+                    <input type="text" id="otherDeptInput" name="otherDept" placeholder="e.g. Biomedical / Architecture / Mining">
+                  </div>
+                  <span class="error-msg" id="otherDeptError">Please enter your department name.</span>
+                </div>
+
+                <!-- Project Topic & Details -->
+                <div class="form-group">
+                  <label for="message">Project Topic & Requirements <span class="required">*</span></label>
+                  <div class="input-wrap textarea-wrap">
+                    <i class="fa-regular fa-comment-dots input-icon textarea-icon"></i>
+                    <textarea id="message" name="message" rows="4" placeholder="Mention your project topic, required technology (e.g. Python, Arduino, React, CAD), submission deadline date..." required></textarea>
+                  </div>
+                  <span class="error-msg" id="messageError">Please enter your project details (minimum 10 characters).</span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
+                  <span class="btn-text">
+                    <i class="fa-solid fa-paper-plane"></i> Submit Project Order
+                  </span>
+                  <span class="btn-loader" aria-hidden="true">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Submitting...
+                  </span>
+                </button>
+
+                <p class="form-disclaimer">
+                  🔒 We protect your privacy. Your project idea and details are kept strictly confidential.
+                </p>
+              </form>
+
+              <!-- Success Alert Toast / Modal -->
+              <div class="form-success-banner" id="successBanner" role="status" aria-live="polite" hidden>
+                <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="success-body">
+                  <h4>Project Order Submitted to ProjectA!</h4>
+                  <p id="successMessageText">Your project details have been sent to our team via Email and WhatsApp.</p>
+                  
+                  <div class="order-summary-card" id="orderSummaryBox" style="background: rgba(0, 102, 255, 0.06); border: 1px dashed #0066ff50; border-radius: 10px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem; line-height: 1.6;">
+                    <!-- Filled dynamically with student order summary -->
+                  </div>
+
+                  <div class="success-actions">
+                    <a id="whatsappForwardBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm">
+                      <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp Now
+                    </a>
+                    <button type="button" class="btn btn-outline btn-sm" id="resetFormBtn">Order Another Project</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Location & Service Coverage Section -->
+    <section class="section map-section">
+      <div class="container">
+        <div class="map-card">
+          <div class="map-info">
+            <div class="map-info-badge"><i class="fa-solid fa-location-dot"></i> Service Base</div>
+            <h3>ProjectA Development Hub</h3>
+            <p>Delivering finished college projects, reports, and working kits to students in Ahmedabad, Gujarat.</p>
+            <div class="map-contact-chips">
+              <span class="chip"><i class="fa-solid fa-city"></i> Ahmedabad, Gujarat</span>
+              <span class="chip"><i class="fa-solid fa-phone"></i> +91 97147 11897</span>
+              <span class="chip"><i class="fa-solid fa-envelope"></i> support.projecta@gmail.com</span>
+            </div>
+          </div>
+          <div class="map-frame-wrapper">
+            <iframe 
+              title="ProjectA Development Hub Location Map"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117502.83921820689!2d72.50742516447834!3d23.020474099999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e848aba5bd449%3A0x4fcedd11614f6516!2sAhmedabad%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+              width="100%" 
+              height="280" 
+              style="border:0;" 
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#home" class="brand-logo footer-logo">
+            <img src="PROJECTA_LOGO.png" alt="ProjectA Logo" class="logo-img">
+            <span class="brand-text">PROJECT<span>A</span></span>
+          </a>
+          <p class="brand-tagline">Build. Learn. Create.</p>
+          <p class="footer-desc">
+            Customized college student project development service. Complete working projects, source code, hardware models, reports, and viva support.
+          </p>
+          <div class="footer-socials">
+            <a href="https://wa.me/919714711897" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="mailto:support.projecta@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+            <a href="tel:+919714711897" aria-label="Phone"><i class="fa-solid fa-phone"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">Why ProjectA</a></li>
+            <li><a href="#departments">Project Branches</a></li>
+            <li><a href="#contact">Order Project</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Project Branches</h4>
+          <ul>
+            <li><a href="#departments">Computer & IT Projects</a></li>
+            <li><a href="#departments">Mechanical & Auto Projects</a></li>
+            <li><a href="#departments">Electrical & EC Projects</a></li>
+            <li><a href="#departments">Civil Engineering Projects</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Direct Contact</h4>
+          <ul>
+            <li><i class="fa-solid fa-phone"></i> +91 97147 11897</li>
+            <li><i class="fa-brands fa-whatsapp"></i> +91 97147 11897</li>
+            <li><i class="fa-solid fa-envelope"></i> support.projecta@gmail.com</li>
+            <li><i class="fa-solid fa-location-dot"></i> Ahmedabad, Gujarat</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; <span id="currentYear"></span> ProjectA. All rights reserved.</p>
+        <p class="footer-motto">Build. Learn. Create.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Sticky WhatsApp Button (Mobile & Desktop) -->
+  <a href="https://wa.me/919714711897?text=Hello%20ProjectA!%20I%20want%20to%20order%20a%20college%20project." 
+     class="floating-whatsapp-btn" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     aria-label="Chat directly on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="floating-tooltip">Order on WhatsApp!</span>
+  </a>
+
+  <!-- Floating Scroll To Top Button -->
+  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll to top">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <script src="script.js"></script>
+</body>
+</html>
