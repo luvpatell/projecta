@@ -171,6 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let cachedVisits = null;
 
+  // The counter must NEVER affect login/session. On any error we just keep
+  // the last known value (or show a dash) and leave the user logged in.
   const fetchVisits = async () => {
     const token = sessionStorage.getItem('projecta_dev_token');
     try {
@@ -178,17 +180,16 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { Authorization: `Bearer ${token}` },
         cache: 'no-store'
       });
-      if (res.status === 401) {
-        sessionStorage.removeItem('projecta_dev_token');
-        showLogin();
-        return null;
+      if (!res.ok) {
+        console.warn('[ProjectA] /api/visits failed with status', res.status);
+        return cachedVisits;
       }
-      if (!res.ok) throw new Error('Visits API error');
       const data = await res.json();
       cachedVisits = Number(data.count) || 0;
       return cachedVisits;
     } catch (e) {
-      return cachedVisits; // keep last known value if network fails
+      console.warn('[ProjectA] /api/visits network error', e);
+      return cachedVisits;
     }
   };
 

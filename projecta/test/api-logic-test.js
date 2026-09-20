@@ -1,0 +1,21 @@
+process.env.DEV_USER='admin'; process.env.DEV_PASS='pw'; process.env.TOKEN_SECRET='s3cret';
+const login=require('../api/login.js'), visit=require('../api/visit.js'), visits=require('../api/visits.js');
+const mk=(method,headers={},body)=>{const r={method,headers,body};const o={code:200,h:{},json:null};
+ const res={setHeader:(k,v)=>o.h[k]=v,status:c=>{o.code=c;return res},json:j=>{o.json=j;return res}};return {req:r,res,o}};
+const call=async(fn,method,headers,body)=>{const m=mk(method,headers,body);await fn(m.req,m.res);return m.o};
+let fails=0; const ok=(c,msg)=>{console.log((c?'PASS ':'FAIL ')+msg); if(!c)fails++};
+(async()=>{
+ let r=await call(login,'POST',{}, {user:'admin',pass:'bad'}); ok(r.code===401,'wrong password -> 401');
+ r=await call(login,'POST',{}, {user:'admin',pass:'pw'}); ok(r.code===200&&r.json.token,'correct login -> token');
+ const token=r.json.token;
+ r=await call(visits,'GET',{}); ok(r.code===401,'visits without token -> 401');
+ r=await call(visits,'GET',{authorization:'Bearer '+token}); ok(r.code===200&&r.json.count===0,'visits with token -> 0');
+ for(let i=0;i<105;i++) await call(visit,'POST',{'user-agent':'TestDevice-'+i});
+ r=await call(visits,'GET',{authorization:'Bearer '+token}); ok(r.json.count===105,'105 new devices -> count 105 (got '+r.json.count+')');
+ let first=await call(visit,'POST',{'user-agent':'Phone'}); const cookie=first.h['Set-Cookie'].split(';')[0];
+ for(let i=0;i<5;i++) await call(visit,'POST',{'user-agent':'Phone',cookie});
+ r=await call(visits,'GET',{authorization:'Bearer '+token}); ok(r.json.count===106,'same device 6 visits -> +1 (got '+r.json.count+')');
+ r=await call(visit,'POST',{'user-agent':'Googlebot'}); ok(r.json.counted===false,'bot not counted');
+ r=await call(visits,'GET',{authorization:'Bearer '+token.slice(0,-3)+'xxx'}); ok(r.code===401,'tampered token -> 401');
+ process.exit(fails?1:0);
+})();
