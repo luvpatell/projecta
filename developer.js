@@ -1,7 +1,6 @@
 /* ==========================================================================
    PROJECTA — DEVELOPER PORTAL & DASHBOARD JAVASCRIPT
    Authentication: Credentials verified SERVER-SIDE via /api/login
-   Visitor count: fetched from /api/visits (server-side, persistent)
    No credentials or hashes stored in this file.
    ========================================================================== */
 
@@ -44,11 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let departmentChartInstance = null;
   let trendChartInstance = null;
 
-  // Helper: escape HTML to prevent script injection from order data
-  const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  }[c]));
-
   // --------------------------------------------------------------------------
   // 1. Authentication & Session Check
   // --------------------------------------------------------------------------
@@ -86,7 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Handle Login Form Submit
-  // Credentials are POSTed to the backend (/api/login) and verified server-side.
+  // Credentials are POSTed to the Node.js backend (/api/login).
+  // server.js reads DEV_USER and DEV_PASS from the .env file and compares.
+  // Credentials are NEVER stored in this JS file or sent back to the browser.
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -116,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           if (loginErrorAlert) {
             loginErrorAlert.hidden = false;
-            loginErrorAlert.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Access Denied: Invalid username or password.';
+            loginErrorAlert.innerHTML = '<i class=fa-solid fa-triangle-exclamation></i> Access Denied: Invalid username or password.';
           }
           devPasswordInput.value = '';
           devPasswordInput.focus();
@@ -126,27 +122,23 @@ document.addEventListener('DOMContentLoaded', () => {
         loginBtn.disabled = false;
         if (loginErrorAlert) {
           loginErrorAlert.hidden = false;
-          loginErrorAlert.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Cannot connect to server. Please try again in a moment.';
+          loginErrorAlert.innerHTML = '<i class=fa-solid fa-triangle-exclamation></i> Cannot connect to server. Please make sure the server is running (node server.js).';
         }
       }
     });
   }
-
   // Handle Logout
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       if (confirm('Are you sure you want to log out of the Developer Portal?')) {
-        sessionStorage.removeItem('projecta_dev_token');
-        sessionStorage.removeItem('projecta_dev_auth'); // legacy key cleanup
+        sessionStorage.removeItem('projecta_dev_auth');
         showLogin();
       }
     });
   }
 
   // --------------------------------------------------------------------------
-  // 2. Data Retrieval & Management
-  //    Orders: LocalStorage (unchanged)
-  //    Visits: real global count from server API (/api/visits)
+  // 2. Data Retrieval & Management (LocalStorage)
   // --------------------------------------------------------------------------
   const getOrders = () => {
     try {
@@ -157,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const DEMO_IDS = ['ORD-1078', 'ORD-1079', 'ORD-1080', 'ORD-1081', 'ORD-1082'];
       const realOrders = allOrders.filter(o => !DEMO_IDS.includes(o.id));
       if (realOrders.length !== allOrders.length) {
+        // Found demo orders — purge them and save only real orders
         localStorage.setItem('projecta_orders', JSON.stringify(realOrders));
       }
       return realOrders;
@@ -169,58 +162,36 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('projecta_orders', JSON.stringify(orders));
   };
 
-  let cachedVisits = null;
-
-  const fetchVisits = async () => {
-    const token = sessionStorage.getItem('projecta_dev_token');
-    try {
-      const res = await fetch('/api/visits', {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: 'no-store'
-      });
-      if (res.status === 401) {
-        sessionStorage.removeItem('projecta_dev_token');
-        showLogin();
-        return null;
-      }
-      if (!res.ok) throw new Error('Visits API error');
-      const data = await res.json();
-      cachedVisits = Number(data.count) || 0;
-      return cachedVisits;
-    } catch (e) {
-      return cachedVisits; // keep last known value if network fails
-    }
+  const getVisits = () => {
+    // 100% real visit count — no artificial minimum or floor
+    return parseInt(localStorage.getItem('projecta_visits') || '0', 10);
   };
+
 
   // --------------------------------------------------------------------------
   // 3. Render Dashboard, KPIs & Charts
   // --------------------------------------------------------------------------
-  const renderDashboard = async () => {
+  const renderDashboard = () => {
     const orders = getOrders();
+    const visits = getVisits();
 
+    // Calculate KPIs
     const totalOrders = orders.length;
     const pendingOrders = orders.filter(o => o.status === 'New' || o.status === 'In Progress').length;
     const completedOrders = orders.filter(o => o.status === 'Completed').length;
 
+    // Update KPI Card Numbers
+    if (totalVisitsCount) totalVisitsCount.textContent = visits.toLocaleString('en-IN');
     if (totalOrdersCount) totalOrdersCount.textContent = totalOrders.toLocaleString('en-IN');
     if (pendingOrdersCount) pendingOrdersCount.textContent = pendingOrders.toLocaleString('en-IN');
     if (completedOrdersCount) completedOrdersCount.textContent = completedOrders.toLocaleString('en-IN');
-    if (totalVisitsCount) {
-      totalVisitsCount.textContent = cachedVisits === null ? '…' : cachedVisits.toLocaleString('en-IN');
-    }
 
+    // Render Graphical Charts
     renderDepartmentChart(orders);
-    renderTrendChart(cachedVisits ?? 0, orders);
-    renderOrdersTable();
+    renderTrendChart(visits, orders);
 
-    // Real global visitor count from the server
-    const visits = await fetchVisits();
-    if (visits !== null) {
-      if (totalVisitsCount) totalVisitsCount.textContent = visits.toLocaleString('en-IN');
-      renderTrendChart(visits, orders);
-    } else if (totalVisitsCount && cachedVisits === null) {
-      totalVisitsCount.textContent = '—';
-    }
+    // Render Orders Table
+    renderOrdersTable();
   };
 
   // --------------------------------------------------------------------------
@@ -230,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = document.getElementById('departmentChart')?.getContext('2d');
     if (!ctx) return;
 
+    // Aggregate counts by department
     const deptCounts = {};
     orders.forEach(o => {
       const dept = o.department || 'Other';
@@ -239,12 +211,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const labels = Object.keys(deptCounts);
     const data = Object.values(deptCounts);
 
+    // If no orders, show a clean empty/zero state instead of fake data
     const chartLabels = labels.length > 0 ? labels : ['No Orders Yet'];
     const chartData = data.length > 0 ? data : [1];
     const chartColors = data.length > 0 ? [
       '#0066FF', '#00D2FF', '#10B981', '#F59E0B',
       '#8B5CF6', '#EC4899', '#6366F1', '#14B8A6'
     ] : ['#e2e8f0'];
+
 
     if (departmentChartInstance) {
       departmentChartInstance.destroy();
@@ -276,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
           tooltip: {
             callbacks: {
               label: function(context) {
-                return ` ${context.label}: ${context.raw} Orders`;
+                return  ${context.label}: ${context.raw} Orders;
               }
             }
           }
@@ -301,8 +275,8 @@ document.addEventListener('DOMContentLoaded', () => {
         datasets: [{
           label: 'Count',
           data: [
-            visits,
-            orders.length,
+            visits, 
+            orders.length, 
             orders.filter(o => o.status === 'New' || o.status === 'In Progress').length,
             orders.filter(o => o.status === 'Completed').length
           ],
@@ -351,8 +325,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const deptFilter = departmentFilterSelect?.value || 'ALL';
     const statusFilter = statusFilterSelect?.value || 'ALL';
 
+    // Filter orders
     const filteredOrders = allOrders.filter(order => {
-      const matchesSearch =
+      const matchesSearch = 
         (order.studentName && order.studentName.toLowerCase().includes(searchQuery)) ||
         (order.phone && order.phone.includes(searchQuery)) ||
         (order.email && order.email.toLowerCase().includes(searchQuery)) ||
@@ -366,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (showingCountText) {
-      showingCountText.textContent = `Showing ${filteredOrders.length} of ${allOrders.length} orders`;
+      showingCountText.textContent = Showing ${filteredOrders.length} of ${allOrders.length} orders;
     }
 
     if (filteredOrders.length === 0) {
@@ -386,32 +361,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const rawPhone = order.phone ? order.phone.replace(/\D/g, '') : '';
         const phoneDigits = rawPhone.length === 10 ? '91' + rawPhone : rawPhone;
-        const waLink = `https://api.whatsapp.com/send?phone=${phoneDigits}&text=${encodeURIComponent(`Hello ${order.studentName}! Regarding your project order with ProjectA (${order.department}):`)}`;
+        const waLink = https://api.whatsapp.com/send?phone=${phoneDigits}&text=${encodeURIComponent(Hello ${order.studentName}! Regarding your project order with ProjectA (${order.department}):)};
 
-        return `
-          <tr data-order-id="${esc(order.id)}">
-            <td><span class="order-id">${esc(order.id || '#ORD')}</span></td>
+        return 
+          <tr data-order-id="${order.id}">
+            <td><span class="order-id">${order.id || '#ORD'}</span></td>
             <td>
-              <div style="font-weight: 600; color: #0f172a;">${esc(order.date || 'Today')}</div>
-              <small style="color: #64748b;">${esc(order.time || '')}</small>
+              <div style="font-weight: 600; color: #0f172a;">${order.date || 'Today'}</div>
+              <small style="color: #64748b;">${order.time || ''}</small>
             </td>
             <td>
               <div class="student-info">
-                <strong>${esc(order.studentName || 'N/A')}</strong>
-                <small><i class="fa-solid fa-phone" style="font-size: 0.75rem;"></i> ${esc(order.phone || '')}</small><br>
-                <small><i class="fa-regular fa-envelope" style="font-size: 0.75rem;"></i> ${esc(order.email || '')}</small>
+                <strong>${order.studentName || 'N/A'}</strong>
+                <small><i class="fa-solid fa-phone" style="font-size: 0.75rem;"></i> ${order.phone || ''}</small><br>
+                <small><i class="fa-regular fa-envelope" style="font-size: 0.75rem;"></i> ${order.email || ''}</small>
               </div>
             </td>
             <td>
-              <span style="font-weight: 700; color: #0066ff;">${esc(order.department || 'N/A')}</span>
+              <span style="font-weight: 700; color: #0066ff;">${order.department || 'N/A'}</span>
             </td>
             <td>
-              <div class="topic-box" title="${esc(order.topic || '')}">
-                ${esc(order.topic || 'No details provided')}
+              <div class="topic-box" title="${(order.topic || '').replace(/"/g, '&quot;')}">
+                ${order.topic || 'No details provided'}
               </div>
             </td>
             <td>
-              <select class="status-select ${statusClass}" onchange="window.updateOrderStatus('${esc(order.id)}', this.value)">
+              <select class="status-select ${statusClass}" onchange="window.updateOrderStatus('${order.id}', this.value)">
                 <option value="New" ${order.status === 'New' ? 'selected' : ''}>New</option>
                 <option value="In Progress" ${order.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
                 <option value="Completed" ${order.status === 'Completed' ? 'selected' : ''}>Completed</option>
@@ -423,13 +398,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn-action-wa" title="Chat with student on WhatsApp">
                   <i class="fa-brands fa-whatsapp"></i> Chat
                 </a>
-                <button type="button" class="btn-action-delete" onclick="window.deleteOrder('${esc(order.id)}')" title="Delete Order">
+                <button type="button" class="btn-action-delete" onclick="window.deleteOrder('${order.id}')" title="Delete Order">
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
               </div>
             </td>
           </tr>
-        `;
+        ;
       }).join('');
     }
   };
@@ -454,15 +429,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let msg = '';
         if (newStatus === 'In Progress') {
-          msg = `Hello ${name}! 🚀 Your college project order (${id} - ${dept}) is now *IN PROGRESS* at ProjectA. Our team has started working on it. We will keep you updated!\n\n— Team ProjectA`;
+          msg = Hello ${name}! 🚀 Your college project order (${id} - ${dept}) is now *IN PROGRESS* at ProjectA. Our team has started working on it. We will keep you updated!\n\n— Team ProjectA;
         } else if (newStatus === 'Completed') {
-          msg = `Hello ${name}! 🎉 Great news! Your college project order (${id} - ${dept}) is *COMPLETED* at ProjectA and is ready for delivery. Please contact us to collect your project!\n\n— Team ProjectA`;
+          msg = Hello ${name}! 🎉 Great news! Your college project order (${id} - ${dept}) is *COMPLETED* at ProjectA and is ready for delivery. Please contact us to collect your project!\n\n— Team ProjectA;
         } else if (newStatus === 'Cancelled') {
-          msg = `Hello ${name}! ⚠️ Your college project order (${id}) at ProjectA has been *CANCELLED*. Please contact us at +91 97147 11897 or support.projecta@gmail.com for more details.\n\n— Team ProjectA`;
+          msg = Hello ${name}! ⚠️ Your college project order (${id}) at ProjectA has been *CANCELLED*. Please contact us at +91 97147 11897 or support.projecta@gmail.com for more details.\n\n— Team ProjectA;
         }
 
         if (msg) {
-          const waUrl = `https://api.whatsapp.com/send?phone=${phoneDigits}&text=${encodeURIComponent(msg)}`;
+          const waUrl = https://api.whatsapp.com/send?phone=${phoneDigits}&text=${encodeURIComponent(msg)};
           window.open(waUrl, '_blank');
         }
       }
@@ -471,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Delete Order
   window.deleteOrder = (orderId) => {
-    if (confirm(`Delete project order ${orderId}?`)) {
+    if (confirm(Delete project order ${orderId}?)) {
       let orders = getOrders();
       orders = orders.filter(o => o.id !== orderId);
       saveOrders(orders);
@@ -486,8 +461,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Refresh Button
   if (refreshDataBtn) {
-    refreshDataBtn.addEventListener('click', async () => {
-      await renderDashboard();
+    refreshDataBtn.addEventListener('click', () => {
+      renderDashboard();
       alert('Dashboard refreshed with latest data!');
     });
   }
@@ -525,14 +500,14 @@ document.addEventListener('DOMContentLoaded', () => {
       let csvContent = 'Order ID,Date,Time,Student Name,Phone,Email,Department,Topic,Status\n';
       orders.forEach(o => {
         const cleanTopic = (o.topic || '').replace(/"/g, '""').replace(/\n/g, ' ');
-        csvContent += `"${o.id}","${o.date}","${o.time}","${o.studentName}","${o.phone}","${o.email}","${o.department}","${cleanTopic}","${o.status}"\n`;
+        csvContent += "${o.id}","${o.date}","${o.time}","${o.studentName}","${o.phone}","${o.email}","${o.department}","${cleanTopic}","${o.status}"\n;
       });
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', `ProjectA_Orders_${new Date().toISOString().slice(0, 10)}.csv`);
+      link.setAttribute('download', ProjectA_Orders_${new Date().toISOString().slice(0, 10)}.csv);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
